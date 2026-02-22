@@ -211,7 +211,7 @@ model ServiceCategory {
   
   // Capability requirements
   /// JSON array of required capability slugs
-  /// Example: ["hospital_attendant", "mobility_assistance"]
+  /// Example: ["hospital_companion", "mobility_assistance"]
   requiredCapabilities String @map("required_capabilities") @db.JsonB
   
   // Service configuration

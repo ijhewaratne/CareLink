@@ -1,0 +1,258 @@
+// ============================================================================
+// Prisma Schema Additions for Phase 2
+// Add these models to your main schema.prisma file
+// ============================================================================
+
+// ============================================================================
+// NOTIFICATION MODELS
+// ============================================================================
+
+enum NotificationType {
+  BOOKING_CREATED
+  BOOKING_MATCHED
+  BOOKING_CONFIRMED
+  BOOKING_STARTED
+  BOOKING_COMPLETED
+  BOOKING_CANCELLED
+  PAYMENT_RECEIVED
+  PAYMENT_RELEASED
+  PAYMENT_REFUNDED
+  PROVIDER_VERIFIED
+  REVIEW_RECEIVED
+  EMERGENCY_ESCALATED
+  SYSTEM_ANNOUNCEMENT
+  
+  @@map("notification_type")
+}
+
+/// FCM Device Tokens for push notifications
+model FcmToken {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  token         String    @unique @db.VarChar(500)
+  isActive      Boolean   @default(true) @map("is_active")
+  
+  // Device info
+  platform      String?   @db.VarChar(20) // ios, android, web
+  deviceModel   String?   @map("device_model") @db.VarChar(100)
+  appVersion    String?   @map("app_version") @db.VarChar(20)
+  
+  // Tracking
+  lastUsedAt    DateTime  @default(now()) @map("last_used_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Indexes
+  @@index([userId, isActive])
+  @@index([token])
+  
+  @@map("fcm_tokens")
+}
+
+/// Notification history
+model Notification {
+  id            String            @id @default(uuid()) @db.Uuid
+  userId        String            @map("user_id") @db.Uuid
+  type          NotificationType
+  
+  // Content
+  title         String            @db.VarChar(255)
+  body          String            @db.Text
+  data          String?           @db.Text // JSON string with additional data
+  imageUrl      String?           @map("image_url") @db.VarChar(500)
+  
+  // Status
+  isRead        Boolean           @default(false) @map("is_read")
+  readAt        DateTime?         @map("read_at")
+  sentAt        DateTime?         @map("sent_at")
+  
+  // Tracking
+  fcmMessageId  String?           @map("fcm_message_id") @db.VarChar(255)
+  errorMessage  String?           @map("error_message") @db.Text
+  
+  // Audit
+  createdAt     DateTime          @default(now()) @map("created_at")
+  
+  // Relations
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Indexes
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@index([type, createdAt])
+  
+  @@map("notifications")
+}
+
+// ============================================================================
+// PAYMENT MODELS
+// ============================================================================
+
+/// Payment transactions (separate from Booking for detailed tracking)
+model PaymentTransaction {
+  id                String        @id @default(uuid()) @db.Uuid
+  bookingId         String        @map("booking_id") @db.Uuid
+  
+  // PayHere specific
+  payherePaymentId  String?       @map("payhere_payment_id") @db.VarChar(100)
+  payhereOrderId    String        @map("payhere_order_id") @db.VarChar(100)
+  
+  // Amounts
+  amount            Decimal       @db.Decimal(10, 2)
+  currency          String        @default("LKR") @db.VarChar(3)
+  platformFee       Decimal       @map("platform_fee") @db.Decimal(10, 2)
+  providerPayout    Decimal       @map("provider_payout") @db.Decimal(10, 2)
+  
+  // Status
+  status            PaymentStatus @default(PENDING)
+  method            String?       @db.VarChar(50) // visa, master, genie, etc.
+  
+  // Customer info (snapshot at payment time)
+  customerEmail     String        @map("customer_email") @db.VarChar(255)
+  customerPhone     String        @map("customer_phone") @db.VarChar(20)
+  customerName      String        @map("customer_name") @db.VarChar(255)
+  
+  // Card info (masked)
+  cardHolderName    String?       @map("card_holder_name") @db.VarChar(255)
+  cardNoMasked      String?       @map("card_no_masked") @db.VarChar(20) // ****1234
+  
+  // Timestamps
+  initiatedAt       DateTime      @default(now()) @map("initiated_at")
+  completedAt       DateTime?     @map("completed_at")
+  refundedAt        DateTime?     @map("refunded_at")
+  
+  // Refund info
+  refundAmount      Decimal?      @map("refund_amount") @db.Decimal(10, 2)
+  refundReason      String?       @map("refund_reason") @db.Text
+  
+  // Relations
+  booking           Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  // Indexes
+  @@index([bookingId])
+  @@index([payhereOrderId])
+  @@index([payherePaymentId])
+  @@index([status, createdAt])
+  @@index([initiatedAt])
+  
+  @@map("payment_transactions")
+}
+
+// ============================================================================
+// INCIDENT REPORTING (for Emergency Escalation)
+// ============================================================================
+
+enum IncidentStatus {
+  REPORTED
+  UNDER_REVIEW
+  RESOLVED
+  CLOSED
+  
+  @@map("incident_status")
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+  
+  @@map("incident_severity")
+}
+
+/// Incident reports for emergency escalations
+model IncidentReport {
+  id                String          @id @default(uuid()) @db.Uuid
+  bookingId         String          @map("booking_id") @db.Uuid
+  
+  // Reporter info
+  reportedBy        String          @map("reported_by") @db.Uuid
+  reportedByRole    UserRole        @map("reported_by_role")
+  
+  // Incident details
+  severity          IncidentSeverity @default(MEDIUM)
+  status            IncidentStatus   @default(REPORTED)
+  category          String          @db.VarChar(100) // medical_emergency, safety_concern, etc.
+  description       String          @db.Text
+  
+  // Location at time of incident
+  locationLat       Float?          @map("location_lat")
+  locationLng       Float?          @map("location_lng")
+  locationAddress   String?         @map("location_address") @db.VarChar(500)
+  
+  // Emergency contact notification
+  emergencyContactNotified Boolean  @default(false) @map("emergency_contact_notified")
+  emergencyContactNotifiedAt DateTime? @map("emergency_contact_notified_at")
+  smsDeliveryStatus String?         @map("sms_delivery_status") @db.VarChar(50)
+  
+  // Resolution
+  resolvedBy        String?         @map("resolved_by") @db.Uuid
+  resolutionNotes   String?         @map("resolution_notes") @db.Text
+  resolvedAt        DateTime?       @map("resolved_at")
+  
+  // Follow-up required
+  followUpRequired  Boolean         @default(false) @map("follow_up_required")
+  followUpDate      DateTime?       @map("follow_up_date")
+  
+  // Audit
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  
+  // Relations
+  booking           Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  reporter          User            @relation("IncidentReporter", fields: [reportedBy], references: [id])
+  resolver          User?           @relation("IncidentResolver", fields: [resolvedBy], references: [id])
+  
+  // Indexes
+  @@index([bookingId])
+  @@index([status, severity])
+  @@index([reportedBy])
+  @@index([createdAt])
+  
+  @@map("incident_reports")
+}
+
+// ============================================================================
+// UPDATE EXISTING USER MODEL
+// Add these fields to the existing User model
+// ============================================================================
+
+/*
+model User {
+  // ... existing fields ...
+  
+  // Phase 2 additions
+  hasAcceptedServiceScope Boolean @default(false) @map("has_accepted_service_scope")
+  acceptedServiceScopeAt  DateTime? @map("accepted_service_scope_at")
+  
+  // Relations (add these)
+  fcmTokens         FcmToken[]
+  notifications     Notification[]
+  incidentReports   IncidentReport[] @relation("IncidentReporter")
+  resolvedIncidents IncidentReport[] @relation("IncidentResolver")
+  
+  // ... rest of model ...
+}
+*/
+
+// ============================================================================
+// UPDATE EXISTING BOOKING MODEL
+// Add this relation to the existing Booking model
+// ============================================================================
+
+/*
+model Booking {
+  // ... existing fields ...
+  
+  // Phase 2 additions
+  incidentReported  Boolean   @default(false) @map("incident_reported")
+  
+  // Relations (add these)
+  paymentTransactions PaymentTransaction[]
+  incidentReports     IncidentReport[]
+  
+  // ... rest of model ...
+}
+*/

@@ -310,14 +310,14 @@ INSERT INTO service_categories (
 ) VALUES 
     (
         gen_random_uuid(),
-        'hospital-attendant',
-        'Hospital Attendant',
-        'රෝහල් සේවක',
+        'hospital-companion',
+        'Hospital Companion',
+        'රෝහල් සහායක',
         'Non-clinical assistance for care recipients in hospital settings. Includes companionship, mobility assistance, meal support, and communication with family.',
         'Hospital companionship and non-clinical care assistance',
         500.00,
         'per_hour',
-        '["hospital_attendant", "mobility_assistance", "communication"]',
+        '["hospital_companion", "mobility_assistance", "communication"]',
         4,
         '{"NIC_FRONT", "NIC_BACK", "POLICE_CLEARANCE"}',
         1
