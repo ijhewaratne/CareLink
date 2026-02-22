@@ -1,0 +1,45 @@
+{
+  "name": "carelink-secure-document-storage",
+  "version": "1.0.0",
+  "description": "Secure document storage module for CareLink - PDPA compliant",
+  "main": "dist/secureDocumentStorage.js",
+  "types": "dist/secureDocumentStorage.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "document-storage",
+    "pdpa",
+    "encryption",
+    "gcs",
+    "s3",
+    "carelink"
+  ],
+  "author": "CareLink Sri Lanka",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
+    "@aws-sdk/client-s3": "^3.478.0",
+    "@aws-sdk/s3-request-presigner": "^3.478.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,25 @@
+/**
+ * Jest Setup File
+ * Configure test environment variables
+ */
+
+const crypto = require('crypto');
+
+// Generate test encryption key
+const testEncryptionKey = crypto.randomBytes(32).toString('hex');
+
+// Set environment variables for tests
+process.env.ENCRYPTION_KEY = testEncryptionKey;
+process.env.CLOUD_PROVIDER = 'gcs';
+process.env.GCS_BUCKET_NAME = 'test-bucket';
+process.env.GCS_PROJECT_ID = 'test-project';
+process.env.S3_BUCKET_NAME = 'test-bucket';
+process.env.AWS_REGION = 'ap-southeast-1';
+process.env.AWS_ACCESS_KEY_ID = 'test-access-key';
+process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-key';
+process.env.MAX_FILE_SIZE_MB = '5';
+process.env.SIGNED_URL_EXPIRATION_MINUTES = '15';
+process.env.NODE_ENV = 'test';
+
+console.log('Test environment configured');
+console.log('Test encryption key generated:', testEncryptionKey.substring(0, 8) + '...');
