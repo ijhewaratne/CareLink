@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Flutter Engine Configuration -->
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleDisplayName</key>
+    <string>CareLink</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>carelink</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(FLUTTER_BUILD_NAME)</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleVersion</key>
+    <string>$(FLUTTER_BUILD_NUMBER)</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
+
+    <!-- ================================================================= -->
+    <!-- LOCATION PERMISSIONS (CRITICAL FOR APP STORE APPROVAL) -->
+    <!-- ================================================================= -->
+    
+    <!-- 
+      PERMISSION: Location When In Use
+      USED FOR: Matching customers with nearby care companions
+      TRIGGER: When customer searches for providers / when provider navigates to shift
+    -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>CareLink requires your location to match you with nearby Care Companions and show accurate arrival times.</string>
+
+    <!-- 
+      PERMISSION: Location Always (Background)
+      USED FOR: Live ETA sharing with care recipient's family during active shifts
+      TRIGGER: When provider accepts a shift and navigates to hospital
+      NOTE: This is REQUIRED for the provider app, optional for customer app
+    -->
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>CareLink requires background location access to share your live ETA with the Care Recipient's family while you are navigating to the hospital or actively on a shift.</string>
+
+    <!-- 
+      PERMISSION: Location Always (iOS 11+ fallback)
+      NOTE: Apple requires both keys for backward compatibility
+    -->
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>CareLink requires background location access to share your live ETA with the Care Recipient's family while you are navigating to the hospital or actively on a shift.</string>
+
+    <!-- ================================================================= -->
+    <!-- BACKGROUND MODES (REQUIRED FOR LOCATION TRACKING) -->
+    <!-- ================================================================= -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <!-- Location updates in background -->
+        <string>location</string>
+        <!-- Background fetch for notifications -->
+        <string>fetch</string>
+        <!-- Remote notifications (FCM) -->
+        <string>remote-notification</string>
+    </array>
+
+    <!-- ================================================================= -->
+    <!-- CAMERA PERMISSION (FOR DOCUMENT UPLOAD) -->
+    <!-- ================================================================= -->
+    <key>NSCameraUsageDescription</key>
+    <string>CareLink needs camera access to capture photos of your identity documents (NIC, Police Clearance) for verification purposes.</string>
+
+    <!-- ================================================================= -->
+    <!-- PHOTO LIBRARY PERMISSION (FOR DOCUMENT UPLOAD) -->
+    <!-- ================================================================= -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>CareLink needs photo library access to upload identity documents (NIC, Police Clearance) from your gallery for verification.</string>
+
+    <!-- ================================================================= -->
+    <!-- MICROPHONE PERMISSION (FUTURE: IN-APP CALLING) -->
+    <!-- ================================================================= -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>CareLink may need microphone access for future in-app calling features between Care Companions and Customers.</string>
+
+    <!-- ================================================================= -->
+    <!-- PUSH NOTIFICATIONS (FIREBASE CLOUD MESSAGING) -->
+    <!-- ================================================================= -->
+    <key>FirebaseAppDelegateProxyEnabled</key>
+    <false/>
+
+    <!-- ================================================================= -->
+    <!-- APP TRANSPORT SECURITY -->
+    <!-- ================================================================= -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+    <!-- ================================================================= -->
+    <!-- NON-CLINICAL DISCLAIMER (REQUIRED FOR APP STORE) -->
+    <!-- This key is read by the app to show mandatory disclaimer -->
+    <!-- ================================================================= -->
+    <key>CareLinkNonClinicalDisclaimer</key>
+    <string>CareLink is a logistics and scheduling platform connecting users with verified care companions. CareLink companions provide NON-CLINICAL assistance only and are strictly prohibited from administering medication, changing wound dressings, or performing medical procedures.</string>
+
+</dict>
+</plist>

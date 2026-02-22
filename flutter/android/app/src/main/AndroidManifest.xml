@@ -1,0 +1,198 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="lk.carelink.app">
+
+    <!-- ================================================================= -->
+    <!-- INTERNET PERMISSIONS -->
+    <!-- ================================================================= -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- ================================================================= -->
+    <!-- LOCATION PERMISSIONS (CRITICAL FOR GOOGLE PLAY APPROVAL) -->
+    <!-- ================================================================= -->
+    
+    <!-- 
+      PERMISSION: Approximate location
+      USED FOR: General area matching, low-power location
+      REQUIRED FOR: Both customer and provider apps
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- 
+      PERMISSION: Precise location
+      USED FOR: Accurate provider matching, navigation, ETA calculation
+      REQUIRED FOR: Both customer and provider apps
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- 
+      PERMISSION: Background location (Android 10+)
+      USED FOR: Live ETA sharing during active shifts
+      REQUIRED FOR: Provider app (customer app optional)
+      NOTE: Google Play requires explicit justification for this permission
+    -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <!-- ================================================================= -->
+    <!-- FOREGROUND SERVICE (REQUIRED FOR BACKGROUND LOCATION) -->
+    <!-- ================================================================= -->
+    
+    <!-- 
+      PERMISSION: Foreground service
+      USED FOR: Keep location tracking active when app is in background
+      REQUIRED FOR: Provider app during active shifts
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- 
+      PERMISSION: Foreground service location (Android 14+)
+      USED FOR: Declare that foreground service uses location
+      REQUIRED FOR: Provider app during active shifts
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!-- 
+      PERMISSION: Wake lock
+      USED FOR: Prevent device from sleeping during active shift tracking
+      REQUIRED FOR: Provider app
+    -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- ================================================================= -->
+    <!-- CAMERA & STORAGE PERMISSIONS (FOR DOCUMENT UPLOAD) -->
+    <!-- ================================================================= -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    
+    <!-- Android 13+ (API 33+) - New permission model -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    
+    <!-- Android 12 and below - Legacy permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <!-- ================================================================= -->
+    <!-- PUSH NOTIFICATION PERMISSIONS (FIREBASE CLOUD MESSAGING) -->
+    <!-- ================================================================= -->
+    
+    <!-- Android 13+ (API 33+) - Notification permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- ================================================================= -->
+    <!-- PHONE PERMISSION (FOR EMERGENCY BUTTON) -->
+    <!-- ================================================================= -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!-- ================================================================= -->
+    <!-- FEATURE DECLARATIONS -->
+    <!-- ================================================================= -->
+    <uses-feature android:name="android.hardware.location" android:required="true" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- ================================================================= -->
+    <!-- APPLICATION CONFIGURATION -->
+    <!-- ================================================================= -->
+    <application
+        android:label="CareLink"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:usesCleartextTraffic="false">
+
+        <!-- ================================================================= -->
+        <!-- MAIN ACTIVITY -->
+        <!-- ================================================================= -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true">
+            
+            <!-- Specifies an Android theme to apply to this Activity -->
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+
+            <!-- Intent filter for main entry point -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Deep linking configuration -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="carelink"
+                    android:host="app" />
+            </intent-filter>
+        </activity>
+
+        <!-- ================================================================= -->
+        <!-- FIREBASE CLOUD MESSAGING SERVICE -->
+        <!-- ================================================================= -->
+        <service
+            android:name=".fcm.CareLinkFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- ================================================================= -->
+        <!-- FOREGROUND SERVICE FOR LOCATION TRACKING -->
+        <!-- ================================================================= -->
+        <service
+            android:name=".location.ShiftTrackingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location"
+            android:permission="android.permission.FOREGROUND_SERVICE_LOCATION">
+        </service>
+
+        <!-- ================================================================= -->
+        <!-- FLUTTER EMBEDDING -->
+        <!-- ================================================================= -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <!-- ================================================================= -->
+        <!-- FIREBASE CONFIGURATION -->
+        <!-- ================================================================= -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="carelink_notifications" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+
+        <!-- ================================================================= -->
+        <!-- GOOGLE MAPS API KEY (IF USING GOOGLE MAPS) -->
+        <!-- ================================================================= -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" />
+
+        <!-- ================================================================= -->
+        <!-- NON-CLINICAL DISCLAIMER (REQUIRED FOR GOOGLE PLAY) -->
+        <!-- This metadata is read by the app to show mandatory disclaimer -->
+        <!-- ================================================================= -->
+        <meta-data
+            android:name="carelink.nonclinical.disclaimer"
+            android:value="CareLink is a logistics and scheduling platform connecting users with verified care companions. CareLink companions provide NON-CLINICAL assistance only and are strictly prohibited from administering medication, changing wound dressings, or performing medical procedures." />
+
+    </application>
+</manifest>

@@ -1,0 +1,197 @@
+name: carelink
+description: CareLink - Verified care companion marketplace for Sri Lanka
+
+# Prevent accidental publishing to pub.dev
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # =============================================================================
+  # FIREBASE (Authentication & Notifications)
+  # =============================================================================
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.0
+  firebase_messaging: ^14.7.0
+  firebase_analytics: ^10.7.0
+
+  # =============================================================================
+  # STATE MANAGEMENT
+  # =============================================================================
+  flutter_riverpod: ^2.4.0
+  riverpod_annotation: ^2.3.0
+
+  # =============================================================================
+  # NAVIGATION
+  # =============================================================================
+  go_router: ^12.1.0
+
+  # =============================================================================
+  # NETWORKING
+  # =============================================================================
+  dio: ^5.4.0
+  retrofit: ^4.0.3
+  json_annotation: ^4.8.1
+
+  # =============================================================================
+  # LOCATION & MAPS
+  # =============================================================================
+  geolocator: ^10.1.0
+  google_maps_flutter: ^2.5.0
+  flutter_polyline_points: ^2.0.0
+  location: ^5.0.3
+
+  # =============================================================================
+  # PERMISSIONS
+  # =============================================================================
+  permission_handler: ^11.1.0
+
+  # =============================================================================
+  # STORAGE
+  # =============================================================================
+  shared_preferences: ^2.2.2
+  flutter_secure_storage: ^9.0.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # =============================================================================
+  # UI COMPONENTS
+  # =============================================================================
+  flutter_screenutil: ^5.9.0
+  flutter_svg: ^2.0.9
+  cached_network_image: ^3.3.0
+  shimmer: ^3.0.0
+  flutter_rating_bar: ^4.0.1
+  intl: ^0.18.1
+  timeago: ^3.6.0
+
+  # =============================================================================
+  # CAMERA & IMAGE PICKING (Document Upload)
+  # =============================================================================
+  image_picker: ^1.0.4
+  camera: ^0.10.5+5
+  image_cropper: ^5.0.1
+
+  # =============================================================================
+  # UTILITIES
+  # =============================================================================
+  equatable: ^2.0.5
+  freezed_annotation: ^2.4.1
+  logger: ^2.0.2
+  package_info_plus: ^5.0.1
+  device_info_plus: ^9.1.0
+  url_launcher: ^6.2.1
+  share_plus: ^7.2.1
+
+  # =============================================================================
+  # PAYMENTS (PayHere Sri Lanka)
+  # =============================================================================
+  # payhere_flutter: ^1.0.0  # Uncomment when available
+  webview_flutter: ^4.4.2   # For PayHere web checkout
+
+  # =============================================================================
+  # PUSH NOTIFICATIONS
+  # =============================================================================
+  flutter_local_notifications: ^16.2.0
+
+  # =============================================================================
+  # BACKGROUND SERVICES
+  # =============================================================================
+  background_fetch: ^1.2.1
+  workmanager: ^0.5.2
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  # =============================================================================
+  # CODE GENERATION
+  # =============================================================================
+  build_runner: ^2.4.7
+  freezed: ^2.4.5
+  json_serializable: ^6.7.1
+  retrofit_generator: ^8.0.6
+  riverpod_generator: ^2.3.5
+  hive_generator: ^2.0.1
+  
+  # =============================================================================
+  # LINTING
+  # =============================================================================
+  flutter_lints: ^3.0.0
+  custom_lint: ^0.5.7
+  riverpod_lint: ^2.3.7
+
+flutter:
+  uses-material-design: true
+
+  # =============================================================================
+  # ASSETS
+  # =============================================================================
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+    - assets/lottie/
+
+  # =============================================================================
+  # FONTS
+  # =============================================================================
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+    
+    - family: NotoSansSinhala
+      fonts:
+        - asset: assets/fonts/NotoSansSinhala-Regular.ttf
+        - asset: assets/fonts/NotoSansSinhala-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansSinhala-Bold.ttf
+          weight: 700
+
+  # =============================================================================
+  # PLATFORM-SPECIFIC CONFIGURATION
+  # =============================================================================
+  plugin:
+    platforms:
+      android:
+        package: lk.carelink.app
+        pluginClass: CareLinkPlugin
+      ios:
+        pluginClass: CareLinkPlugin
+
+# =============================================================================
+# FLUTTER LAUNCHER ICONS
+# =============================================================================
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+
+# =============================================================================
+# FLUTTER NATIVE SPLASH
+# =============================================================================
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/splash_logo.png
+  android: true
+  ios: true
+  android_gravity: center
+  ios_content_mode: center
+  fullscreen: true
